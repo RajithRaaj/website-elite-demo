@@ -49,27 +49,9 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
-        /* Responsive hamburger menu icon */
+        /* Responsive hamburger menu icon - HIDDEN as navigation is removed */
         .hamburger-icon span {
-            display: block;
-            width: 25px;
-            height: 3px;
-            background-color: #333;
-            margin: 5px 0;
-            transition: all 0.3s ease-in-out;
-            border-radius: 9999px; /* Tailwind's rounded-full */
-        }
-
-        .hamburger-icon.open span:nth-child(1) {
-            transform: translateY(8px) rotate(45deg);
-        }
-
-        .hamburger-icon.open span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger-icon.open span:nth-child(3) {
-            transform: translateY(-8px) rotate(-45deg);
+            display: none; /* Hide hamburger icon */
         }
 
         /* Cart Modal Animations */
@@ -158,7 +140,7 @@
             padding: 12px;
             border-radius: 9999px; /* Circle */
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, width 0.3s ease, padding 0.3s ease;
             z-index: 100;
             display: flex;
             align-items: center;
@@ -279,8 +261,8 @@
             <!-- Logo -->
             <a href="#" class="text-2xl font-bold gradient-text">Aura</a>
 
-            <!-- Mobile Menu Button -->
-            <button id="menu-button" class="md:hidden p-2 rounded-lg focus:outline-none">
+            <!-- Mobile Menu Button (Hidden as per request) -->
+            <button id="menu-button" class="md:hidden p-2 rounded-lg focus:outline-none hidden">
                 <div class="hamburger-icon flex flex-col items-center justify-center">
                     <span></span>
                     <span></span>
@@ -288,16 +270,13 @@
                 </div>
             </button>
 
-            <!-- Navigation Links (Desktop) -->
+            <!-- Navigation Links (Removed as per request) -->
             <nav class="hidden md:flex space-x-8">
-                <a href="#hero" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Home</a>
-                <a href="#products" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Shop</a>
-                <a href="#about" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">About</a>
-                <a href="#contact" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Contact</a>
+                <!-- Navigation links removed -->
             </nav>
 
             <!-- Cart Icon -->
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-4 ml-auto"> <!-- ml-auto pushes cart to right when nav is gone -->
                 <button id="cart-button" class="relative text-gray-700 hover:text-purple-600 focus:outline-none">
                     <!-- Cart SVG Icon -->
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -306,12 +285,9 @@
             </div>
         </div>
 
-        <!-- Mobile Navigation Menu -->
+        <!-- Mobile Navigation Menu (Removed as per request) -->
         <nav id="mobile-menu" class="md:hidden mt-4 hidden flex-col items-center space-y-4 bg-white rounded-lg shadow-md p-4">
-            <a href="#hero" class="text-gray-700 hover:text-purple-600 font-medium w-full text-center py-2 transition-colors">Home</a>
-            <a href="#products" class="text-gray-700 hover:text-purple-600 font-medium w-full text-center py-2 transition-colors">Shop</a>
-            <a href="#about" class="text-gray-700 hover:text-purple-600 font-medium w-full text-center py-2 transition-colors">About</a>
-            <a href="#contact" class="text-gray-700 hover:text-purple-600 font-medium w-full text-center py-2 transition-colors">Contact</a>
+            <!-- Mobile navigation links removed -->
         </nav>
     </header>
 
@@ -334,7 +310,7 @@
                     <div class="relative z-10 max-w-3xl">
                         <h1 class="text-4xl md:text-6xl font-extrabold mb-4 animate-slide-item delay-0">Comfort Meets Trendsetting</h1>
                         <p class="text-lg md:text-xl mb-8 animate-slide-item delay-1">Our designs are crafted for effortless style and ultimate comfort.</p>
-                        <a href="#about" class="btn-primary text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out inline-block animate-slide-item delay-2">Learn More</a>
+                        <a href="#products" class="btn-primary text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out inline-block animate-slide-item delay-2">Shop Now</a>
                     </div>
                 </div>
 
@@ -343,7 +319,7 @@
                     <div class="relative z-10 max-w-3xl">
                         <h1 class="text-4xl md:text-6xl font-extrabold mb-4 animate-slide-item delay-0">Redefine Your Wardrobe</h1>
                         <p class="text-lg md:text-xl mb-8 animate-slide-item delay-1">Explore our exclusive collections and find your next favorite outfit.</p>
-                        <a href="#contact" class="btn-primary text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out inline-block animate-slide-item delay-2">Contact Us</a>
+                        <a href="#products" class="btn-primary text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out inline-block animate-slide-item delay-2">Explore Styles</a>
                     </div>
                 </div>
             </div>
@@ -473,10 +449,11 @@
 
     <!-- Floating Instagram Button -->
     <a href="https://instagram.com/aura_apparel" target="_blank" id="instagram-button">
-        <!-- Instagram SVG Icon -->
-        <svg fill="currentColor" class="w-7 h-7" viewBox="0 0 16 16">
-            <path d="M8 0C5.829 0 5.556.01 4.752.053A4.5 4.5 0 00.915.914.5.5 0 00.053 4.752C.01 5.556 0 5.829 0 8s.01 2.444.053 3.248a4.5 4.5 0 00.861 3.838.5.5 0 003.838.861c.804.043 1.076.053 3.248.053s2.444-.01 3.248-.053a4.5 4.5 0 003.838-.861.5.5 0 00.861-3.838c.043-.804.053-1.076.053-3.248s-.01-2.444-.053-3.248a4.5 4.5 0 00-.861-3.838.5.5 0 00-3.838-.861C10.444.01 10.171 0 8 0zM8 1.4c2.148 0 2.373.008 3.03.046a3.2 3.2 0 012.246.993 3.2 3.2 0 01.993 2.246c.038.657.046.882.046 3.03s-.008 2.373-.046 3.03a3.2 3.2 0 01-.993 2.246 3.2 3.2 0 01-2.246.993c-.657.038-.882.046-3.03.046s-2.373-.008-3.03-.046a3.2 3.2 0 01-2.246-.993A3.2 3.2 0 011.4 12.315c-.038-.657-.046-.882-.046-3.03s.008-2.373.046-3.03a3.2 3.2 0 01.993-2.246A3.2 3.2 0 014.752 1.4c.657-.038.882-.046 3.03-.046z"/>
-            <path d="M8 5a3 3 0 100 6 3 3 0 000-6zm0 1.4a1.6 1.6 0 110 3.2 1.6 1.6 0 010-3.2zM12.956 2.456a.75.75 0 10-1.5 0 .75.75 0 001.5 0z"/>
+        <!-- Modern Instagram SVG Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram">
+            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" x2="17.5" y1="6.5" y2="6.5"/>
         </svg>
         <span class="instagram-text">Follow us!</span>
     </a>
@@ -594,11 +571,9 @@
 
             filteredProducts.forEach(product => {
                 const productCard = document.createElement('div');
-                // Added AOS attributes to product cards for scroll animation
+                // Removed AOS attributes from product cards to ensure visibility on mobile
                 productCard.className = 'product-card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition duration-200 hover:shadow-xl hover:scale-[1.02] cursor-pointer';
                 productCard.dataset.productId = product.id; // Store product ID
-                productCard.setAttribute('data-aos', 'fade-up');
-                productCard.setAttribute('data-aos-delay', (product.id % 4) * 100); // Stagger delay based on row
 
                 productCard.innerHTML = `
                     <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg mb-4">
@@ -803,19 +778,19 @@
 
         // --- Event Listeners ---
 
-        // Mobile menu toggle
-        menuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-            menuButton.querySelector('.hamburger-icon').classList.toggle('open');
-        });
+        // Mobile menu toggle (now hidden as per request)
+        // menuButton.addEventListener('click', () => {
+        //     mobileMenu.classList.toggle('hidden');
+        //     menuButton.querySelector('.hamburger-icon').classList.toggle('open');
+        // });
 
-        // Close mobile menu when a link is clicked
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-                menuButton.querySelector('.hamburger-icon').classList.remove('open');
-            });
-        });
+        // Close mobile menu when a link is clicked (now hidden as per request)
+        // mobileMenu.querySelectorAll('a').forEach(link => {
+        //     link.addEventListener('click', () => {
+        //         mobileMenu.classList.add('hidden');
+        //         menuButton.querySelector('.hamburger-icon').classList.remove('open');
+        //     });
+        // });
 
         // Cart button click
         cartButton.addEventListener('click', openCartModal);
