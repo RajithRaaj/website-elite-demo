@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura - Your Style Destination</title>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- AOS Library for Animate On Scroll -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        /* Custom CSS for gradient text, transitions, and specific animations */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Light gray background */
+            min-height: 100vh; /* Ensure body takes full viewport height */
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden; /* Prevent horizontal scroll issues */
+            position: relative; /* For video background positioning */
+        }
+
+        .gradient-text {
+            background: linear-gradient(45deg, #8a2be2, #4b0082); /* Purple gradient */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #8a2be2, #4b0082); /* Purple gradient */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
+        }
+
+        .product-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive hamburger menu icon */
+        .hamburger-icon span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: #333;
+            margin: 5px 0;
+            transition: all 0.3s ease-in-out;
+            border-radius: 9999px; /* Tailwind's rounded-full */
+        }
+
+        .hamburger-icon.open span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .hamburger-icon.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-icon.open span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        /* Cart Modal Animations */
+        .cart-modal {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .cart-modal.open {
+            transform: translateX(0);
+        }
+
+        .cart-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .cart-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Video background styling */
+        #video-background {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -2; /* Behind everything else */
+            transform: translateX(-50%) translateY(-50%);
+            background-size: cover;
+            filter: brightness(0.6); /* Slightly darken video for text readability */
+        }
+
+        #video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3); /* Even darker overlay */
+            z-index: -1; /* Above video, below content */
+        }
+
+        /* Hero Carousel specific styles */
+        .carousel-slide {
+            display: none; /* Hidden by default */
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .carousel-slide.active {
+            display: flex; /* Show active slide */
+            opacity: 1;
+        }
+
+        /* Fade-in animations for hero content */
+        .animate-slide-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .carousel-slide.active .animate-slide-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Delayed animations (controlled by JS) */
+        .delay-0 { transition-delay: 0s; }
+        .delay-1 { transition-delay: 0.5s; }
+        .delay-2 { transition-delay: 1s; }
+        .delay-3 { transition-delay: 1.5s; }
+
+        /* Floating Instagram Button */
+        #instagram-button {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888, #8a2be2); /* Instagram gradient */
+            color: white;
+            padding: 12px;
+            border-radius: 9999px; /* Circle */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px; /* Initial size */
+            height: 56px;
+            overflow: hidden; /* Hide text initially */
+            white-space: nowrap;
+        }
+
+        #instagram-button:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            width: 180px; /* Expand width on hover */
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        #instagram-button .instagram-text {
+            display: none; /* Hidden by default */
+            margin-left: 10px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        #instagram-button:hover .instagram-text {
+            display: block; /* Show on hover */
+        }
+
+        /* Responsive adjustments for Instagram button */
+        @media (max-width: 768px) {
+            #instagram-button {
+                left: 10px;
+                bottom: 10px;
+                width: 48px;
+                height: 48px;
+                padding: 10px;
+            }
+            #instagram-button:hover {
+                width: 48px; /* Do not expand on small screens */
+                padding-left: 10px;
+                padding-right: 10px;
+                transform: scale(1.05); /* Only scale slightly */
+            }
+            #instagram-button .instagram-text {
+                display: none; /* Always hidden on small screens */
+            }
+        }
+
+        /* Preloader styling */
+        #preloader {
+            transition: opacity 0.7s ease-out, visibility 0.7s ease-out;
+            opacity: 1;
+            visibility: visible;
+        }
+        #preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Animated background for sections (fragments moving effect) */
+        .section-animated-bg {
+            position: relative;
+            overflow: hidden; /* Contains the pseudo-element */
+            z-index: 1; /* Above video background, below content */
+        }
+
+        .section-animated-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(138, 43, 226, 0.05),
+                rgba(138, 43, 226, 0.05) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            background-size: 40px 40px; /* Size of the fragment pattern */
+            animation: moveFragments 20s linear infinite;
+            z-index: -1; /* Behind the section's content */
+            pointer-events: none; /* Allows clicks to pass through */
+        }
+
+        @keyframes moveFragments {
+            from {
+                background-position: 0 0;
+            }
+            to {
+                background-position: 40px 40px; /* Moves the pattern */
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Preloader -->
+    <div id="preloader" class="fixed inset-0 bg-gradient-to-br from-purple-500 to-indigo-700 flex flex-col items-center justify-center z-[200] opacity-100">
+        <h1 class="text-white text-4xl md:text-6xl font-bold animate-pulse">Aura</h1>
+        <p class="text-white text-lg md:text-xl mt-4">Loading your style...</p>
+    </div>
+
+    <!-- Video Background -->
+    <video autoplay loop muted playsinline id="video-background">
+        <!-- Using a placeholder video. Replace with your actual video source. -->
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-fashion-model-in-the-studio-3453-large.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div id="video-overlay"></div>
+
+
+    <!-- Header -->
+    <header class="bg-white bg-opacity-90 shadow-sm py-4 px-6 md:px-10 sticky top-0 z-50 rounded-b-xl backdrop-blur-sm">
+        <div class="container mx-auto flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="text-2xl font-bold gradient-text">Aura</a>
+
+            <!-- Mobile Menu Button -->
+            <button id="menu-button" class="md:hidden p-2 rounded-lg focus:outline-none">
+                <div class="hamburger-icon flex flex-col items-center justify-center">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+
+            <!-- Navigation Links (Desktop) -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="#hero" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Home</a>
+                <a href="#products" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Shop</a>
+                <a href="#about" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">About</a>
+                <a href="#contact" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Contact</a>
+            </nav>
+
+            <!-- Cart Icon -->
+            <div class="flex items-center space-x-4">
+                <button id="cart-button" class="relative text-gray-700 hover:text-purple-600 focus:outline-none">
+                    <!-- Cart SVG Icon -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <nav id="mobile-menu" class="md:hidden mt-4 hidden flex-col items-center space-y-4 bg-white rounded-lg shadow-md p-4">
+            <a href="#hero" class="text-gray-700 hover:text-purple-600 font-medium w-full text-center py-2 transition-colors">Home</a>
+            <a href="#products" class="text-gray-700 hover:text-purple-600 font-medium w-full text-center py-2 transition-colors">Shop</a>
+            <a href="#about" class="text-gray-700 hover:text-purple-600 font-medium w-full text-center py-2 transition-colors">About</a>
+            <a href="#contact" class="text-gray-700 hover:text-purple-600 font-medium w-full text-center py-2 transition-colors">Contact</a>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow">
+        <!-- Hero Section (Carousel) -->
+        <section id="hero" class="relative h-[80vh] md:h-[90vh] flex items-center justify-center text-center text-white px-4 overflow-hidden">
+            <div id="carousel-container" class="relative w-full h-full">
+                <!-- Slide 1 -->
+                <div class="carousel-slide absolute inset-0 flex items-center justify-center bg-cover bg-center" style="background-image: url('https://placehold.co/1920x1080/7c3aed/ffffff?text=Aura+Collection+1');">
+                    <div class="relative z-10 max-w-3xl">
+                        <h1 class="text-4xl md:text-6xl font-extrabold mb-4 animate-slide-item delay-0">Express Your Authentic Aura</h1>
+                        <p class="text-lg md:text-xl mb-8 animate-slide-item delay-1">Discover fresh trends that define your unique style.</p>
+                        <a href="#products" class="btn-primary text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out inline-block animate-slide-item delay-2">Shop Latest</a>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="carousel-slide absolute inset-0 flex items-center justify-center bg-cover bg-center" style="background-image: url('https://placehold.co/1920x1080/8a2be2/ffffff?text=Aura+Collection+2');">
+                    <div class="relative z-10 max-w-3xl">
+                        <h1 class="text-4xl md:text-6xl font-extrabold mb-4 animate-slide-item delay-0">Comfort Meets Trendsetting</h1>
+                        <p class="text-lg md:text-xl mb-8 animate-slide-item delay-1">Our designs are crafted for effortless style and ultimate comfort.</p>
+                        <a href="#about" class="btn-primary text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out inline-block animate-slide-item delay-2">Learn More</a>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="carousel-slide absolute inset-0 flex items-center justify-center bg-cover bg-center" style="background-image: url('https://placehold.co/1920x1080/4b0082/ffffff?text=Aura+Collection+3');">
+                    <div class="relative z-10 max-w-3xl">
+                        <h1 class="text-4xl md:text-6xl font-extrabold mb-4 animate-slide-item delay-0">Redefine Your Wardrobe</h1>
+                        <p class="text-lg md:text-xl mb-8 animate-slide-item delay-1">Explore our exclusive collections and find your next favorite outfit.</p>
+                        <a href="#contact" class="btn-primary text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out inline-block animate-slide-item delay-2">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="py-16 bg-gradient-to-br from-purple-50 to-indigo-100 px-6 md:px-10 section-animated-bg" data-aos="fade-up">
+            <div class="container mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-8 gradient-text">Our Latest Collection</h2>
+
+                <!-- Category Filters -->
+                <div class="flex justify-center space-x-4 mb-12">
+                    <button class="filter-btn bg-purple-600 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:bg-purple-700 transition duration-200" data-category="all">All</button>
+                    <button class="filter-btn bg-white text-gray-700 font-semibold py-2 px-6 rounded-full shadow-md hover:bg-gray-100 transition duration-200" data-category="men">Men</button>
+                    <button class="filter-btn bg-white text-gray-700 font-semibold py-2 px-6 rounded-full shadow-md hover:bg-gray-100 transition duration-200" data-category="women">Women</button>
+                </div>
+
+                <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Product Cards will be injected here by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- About Us Section -->
+        <section id="about" class="py-16 bg-white px-6 md:px-10 section-animated-bg" data-aos="fade-up" data-aos-delay="200">
+            <div class="container mx-auto max-w-4xl text-center">
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 gradient-text">About Aura</h2>
+                <p class="text-gray-700 text-lg leading-relaxed mb-4">
+                    At Aura, we believe fashion is more than just clothing – it's a statement. We curate the latest trends, focusing on comfort, sustainability, and individuality. Our designs are crafted for the modern generation, allowing you to express your authentic self with confidence.
+                </p>
+                <p class="text-gray-700 text-lg leading-relaxed">
+                    From streetwear to essential basics, every piece is selected with passion and precision. Join the Aura movement and redefine your style.
+                </p>
+            </div>
+        </section>
+
+        <!-- Contact Us Section -->
+        <section id="contact" class="py-16 bg-gradient-to-br from-purple-50 to-indigo-100 px-6 md:px-10 section-animated-bg" data-aos="fade-up" data-aos-delay="400">
+            <div class="container mx-auto max-w-2xl text-center">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-8 gradient-text">Get In Touch</h2>
+                <p class="text-gray-700 text-center mb-8">Have questions or just want to say hi? We'd love to hear from you!</p>
+                <!-- Tally.so Button -->
+                <button data-tally-open="wdoK9z" data-tally-emoji-text="👋" data-tally-emoji-animation="wave" class="btn-primary text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out inline-block">
+                    Chat with Us
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 px-6 md:px-10 mt-auto rounded-t-xl">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+            <div class="mb-4 md:mb-0">
+                <h3 class="text-xl font-bold gradient-text">Aura</h3>
+                <p class="text-gray-400 text-sm mt-2">&copy; 2025 Aura. All rights reserved.</p>
+            </div>
+            <nav class="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 mb-4 md:mb-0">
+                <a href="#hero" class="text-gray-300 hover:text-purple-400 transition-colors">Home</a>
+                <a href="#products" class="text-gray-300 hover:text-purple-400 transition-colors">Shop</a>
+                <a href="#about" class="text-gray-300 hover:text-purple-400 transition-colors">About Us</a>
+                <a href="#contact" class="text-gray-300 hover:text-purple-400 transition-colors">Contact</a>
+                <a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Privacy Policy</a>
+            </nav>
+            <div class="flex space-x-4">
+                <!-- Social Media Icons (placeholders) -->
+                <a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33V22H12c5.523 0 10-4.477 10-10z" clip-rule="evenodd" /></svg>
+                </a>
+                <a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2.456a.75.75 0 01.523.918l-1.587 6.175.875.986 4.796-5.48a.75.75 0 011.05.087l.215.34c.056.09.106.18.156.273l-1.396 6.01.875.986 4.796-5.48a.75.75 0 011.05.087l.215.34c.056.09.106.18.156.273L20 12.001c.732 3.843-.728 7.378-3.037 9.171-2.348 1.83-5.26 2.012-7.558.685C7.03 20.301 5.378 18.06 4.606 15.698c-.469-1.464-.53-2.91-.498-3.791.034-.96.126-1.95.275-2.923.187-1.18.423-2.333.69-3.41.282-1.118.575-2.17.849-3.09.186-.62.336-1.11.45-1.442.14-.37.215-.55.228-.593-.01.002-.022-.007-.034-.029-.02-.04-.035-.08-.046-.12-.03-.1-.04-.15-.045-.17-.008-.03-.01-.05-.01-.06-.002-.008-.002-.01-.002-.01l-.004-.007-.006-.01-.004-.005-.002-.002.002-.003c-.004-.002-.006-.003-.008-.003-.008-.002-.015-.002-.023-.002-.007 0-.014 0-.02-.002z" clip-rule="evenodd" /></svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Modal (Sidebar) -->
+    <div id="cart-overlay" class="cart-overlay fixed inset-0 bg-black bg-opacity-75 z-[90] flex justify-end items-start transition-opacity"></div>
+
+    <div id="cart-modal" class="cart-modal fixed top-0 right-0 h-full w-full max-w-sm bg-white shadow-xl z-[100] p-6 flex flex-col rounded-l-2xl">
+        <div class="flex justify-between items-center border-b pb-4 mb-6">
+            <h3 class="text-3xl font-bold gradient-text">Your Cart</h3>
+            <button id="close-cart-button" class="text-gray-500 hover:text-gray-800 text-4xl leading-none focus:outline-none">&times;</button>
+        </div>
+
+        <div id="cart-items" class="flex-grow overflow-y-auto space-y-4 pr-2">
+            <!-- Cart items will be injected here -->
+            <p id="empty-cart-message" class="text-gray-500 text-center py-10">Your cart is empty.</p>
+        </div>
+
+        <div class="border-t pt-6 mt-6">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-xl font-semibold text-gray-700">Subtotal:</span>
+                <span id="cart-total" class="text-2xl font-bold gradient-text">₹0.00</span>
+            </div>
+            <!-- Updated to an anchor tag for external link -->
+            <a href="https://tally.so/r/wdoK9z" target="_blank" class="btn-primary text-white font-semibold py-3 px-6 rounded-full w-full text-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out text-center inline-block mb-3">Proceed to Checkout</a>
+            <button id="shop-more-button" class="bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-full w-full text-lg shadow-md hover:bg-gray-300 transition duration-300 ease-in-out">Shop More</button>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div id="product-detail-modal-overlay" class="fixed inset-0 bg-black bg-opacity-75 z-[100] flex justify-center items-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div id="product-detail-modal" class="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-11/12 relative scale-95 transition-transform duration-300 transform-gpu overflow-y-auto max-h-[90vh]">
+            <button id="close-product-detail-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-4xl leading-none focus:outline-none">&times;</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div class="flex justify-center items-center">
+                    <img id="modal-product-image" src="" alt="Product Image" class="w-full h-auto rounded-lg object-contain max-h-96">
+                </div>
+                <div>
+                    <h3 id="modal-product-name" class="text-3xl font-bold gradient-text mb-2">Product Name</h3>
+                    <p id="modal-product-price" class="text-2xl font-semibold text-gray-800 mb-4">₹0.00</p>
+                    <p id="modal-product-description" class="text-gray-700 leading-relaxed mb-6">Product description goes here.</p>
+                    <div class="mb-6">
+                        <label for="modal-product-size" class="block text-gray-700 text-sm font-bold mb-2">Size</label>
+                        <select id="modal-product-size" class="shadow-sm border rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300 w-full">
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                        </select>
+                    </div>
+                    <button id="modal-add-to-cart" class="btn-primary text-white font-semibold py-3 px-6 rounded-full w-full text-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out" data-product-id="">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Instagram Button -->
+    <a href="https://instagram.com/aura_apparel" target="_blank" id="instagram-button">
+        <!-- Instagram SVG Icon -->
+        <svg fill="currentColor" class="w-7 h-7" viewBox="0 0 16 16">
+            <path d="M8 0C5.829 0 5.556.01 4.752.053A4.5 4.5 0 00.915.914.5.5 0 00.053 4.752C.01 5.556 0 5.829 0 8s.01 2.444.053 3.248a4.5 4.5 0 00.861 3.838.5.5 0 003.838.861c.804.043 1.076.053 3.248.053s2.444-.01 3.248-.053a4.5 4.5 0 003.838-.861.5.5 0 00.861-3.838c.043-.804.053-1.076.053-3.248s-.01-2.444-.053-3.248a4.5 4.5 0 00-.861-3.838.5.5 0 00-3.838-.861C10.444.01 10.171 0 8 0zM8 1.4c2.148 0 2.373.008 3.03.046a3.2 3.2 0 012.246.993 3.2 3.2 0 01.993 2.246c.038.657.046.882.046 3.03s-.008 2.373-.046 3.03a3.2 3.2 0 01-.993 2.246 3.2 3.2 0 01-2.246.993c-.657.038-.882.046-3.03.046s-2.373-.008-3.03-.046a3.2 3.2 0 01-2.246-.993A3.2 3.2 0 011.4 12.315c-.038-.657-.046-.882-.046-3.03s.008-2.373.046-3.03a3.2 3.2 0 01.993-2.246A3.2 3.2 0 014.752 1.4c.657-.038.882-.046 3.03-.046z"/>
+            <path d="M8 5a3 3 0 100 6 3 3 0 000-6zm0 1.4a1.6 1.6 0 110 3.2 1.6 1.6 0 010-3.2zM12.956 2.456a.75.75 0 10-1.5 0 .75.75 0 001.5 0z"/>
+        </svg>
+        <span class="instagram-text">Follow us!</span>
+    </a>
+
+    <!-- AOS Library Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Tally.so Integration Script -->
+    <script async src="https://tally.so/widgets/embed.js" data-tally-env="production"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800, // values from 0 to 3000, with step 50ms
+            once: true, // whether animation should happen only once - while scrolling down
+            disable: function() {
+                // Disable AOS on mobile for performance, if desired (matching original instruction)
+                return window.innerWidth < 768; // Adjust breakpoint as needed
+            }
+        });
+
+        // Array to store cart items (client-side only)
+        let cart = [];
+
+        // Sample product data
+        const products = [
+            { id: 1, name: "Mystic Hoodie", price: 1999.00, image: "https://placehold.co/400x400/9333ea/ffffff?text=Aura+Hoodie", description: "Envelop yourself in mystery with our Mystic Hoodie. Supreme comfort meets urban chic.", gender: "unisex" },
+            { id: 2, name: "Eclipse Tee", price: 999.00, image: "https://placehold.co/400x400/e879f9/ffffff?text=Aura+Tee", description: "A minimalist tee with an impactful design. Perfect for making a subtle yet powerful statement.", gender: "unisex" },
+            { id: 3, name: "Cosmic Joggers", price: 1299.00, image: "https://placehold.co/400x400/8b5cf6/ffffff?text=Aura+Joggers", description: "Journey through your day in comfort with Cosmic Joggers. Freedom and style combined.", gender: "unisex" },
+            { id: 4, name: "Starlight Denim Jacket (Men)", price: 2499.00, image: "https://placehold.co/400x400/6d28d9/ffffff?text=Aura+Men+Denim", description: "Our Starlight Denim overshirt blends rugged charm with a touch of elegance. Versatile and timeless.", gender: "men" },
+            { id: 5, name: "Celestial Flare Jeans (Women)", price: 1899.00, image: "https://placehold.co/400x400/a78bfa/ffffff?text=Aura+Women+Jeans", description: "Flattering flare jeans designed for comfort and a perfect fit. A timeless piece for any outfit.", gender: "women" },
+            { id: 6, name: "Nebula Sweatshirt", price: 1499.00, image: "https://placehold.co/400x400/c084fc/ffffff?text=Aura+Sweatshirt", description: "Dive into a digital dream with this unique graphic sweatshirt. Soft, warm, and highly expressive.", gender: "unisex" },
+            { id: 7, name: "Urban Cargo Shorts (Men)", price: 1099.00, image: "https://placehold.co/400x400/a855f7/ffffff?text=Aura+Men+Shorts", description: "Lightweight and breathable cargo shorts for an urban edge. Ideal for active days or relaxed weekends.", gender: "men" },
+            { id: 8, name: "Ethereal Crop Top (Women)", price: 799.00, image: "https://placehold.co/400x400/d8b4fe/ffffff?text=Aura+Women+Top", description: "Capture the essence of summer with our Ethereal Crop Top. Pure comfort, pure style.", gender: "women" }
+        ];
+
+        // --- DOM Element References ---
+        const menuButton = document.getElementById('menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const cartButton = document.getElementById('cart-button');
+        const cartCount = document.getElementById('cart-count');
+        const cartOverlay = document.getElementById('cart-overlay');
+        const cartModal = document.getElementById('cart-modal');
+        const closeCartButton = document.getElementById('close-cart-button');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const emptyCartMessage = document.getElementById('empty-cart-message');
+        const cartTotal = document.getElementById('cart-total');
+        const productListDiv = document.getElementById('product-list');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const shopMoreButton = document.getElementById('shop-more-button');
+        const preloader = document.getElementById('preloader');
+
+
+        // Product Detail Modal elements
+        const productDetailModalOverlay = document.getElementById('product-detail-modal-overlay');
+        const productDetailModal = document.getElementById('product-detail-modal');
+        const closeProductDetailModalButton = document.getElementById('close-product-detail-modal');
+        const modalProductName = document.getElementById('modal-product-name');
+        const modalProductPrice = document.getElementById('modal-product-price');
+        const modalProductImage = document.getElementById('modal-product-image');
+        const modalProductDescription = document.getElementById('modal-product-description');
+        const modalProductSize = document.getElementById('modal-product-size');
+        const modalAddToCartButton = document.getElementById('modal-add-to-cart');
+
+        // Hero Carousel elements
+        const carouselSlides = document.querySelectorAll('.carousel-slide');
+        let currentSlideIndex = 0;
+        const slideInterval = 4000; // 4 seconds
+
+        // --- Functions ---
+
+        /**
+         * Initializes and manages the hero carousel.
+         */
+        function startCarousel() {
+            function showSlide(index) {
+                carouselSlides.forEach((slide, i) => {
+                    slide.classList.remove('active');
+                    // Reset animations for next cycle
+                    slide.querySelectorAll('.animate-slide-item').forEach(item => {
+                        item.classList.remove('delay-0', 'delay-1', 'delay-2', 'delay-3');
+                    });
+                });
+
+                const activeSlide = carouselSlides[index];
+                activeSlide.classList.add('active');
+
+                // Apply staggered animations for elements within the active slide
+                activeSlide.querySelectorAll('.animate-slide-item').forEach((item, i) => {
+                    item.classList.add(`delay-${i}`);
+                });
+            }
+
+            function nextSlide() {
+                currentSlideIndex = (currentSlideIndex + 1) % carouselSlides.length;
+                showSlide(currentSlideIndex);
+            }
+
+            // Initial display
+            showSlide(currentSlideIndex);
+
+            // Start auto-play
+            setInterval(nextSlide, slideInterval);
+        }
+
+
+        /**
+         * Renders products to the product list section based on a category filter.
+         * @param {string} category - 'all', 'men', or 'women'.
+         */
+        function renderProducts(category = 'all') {
+            productListDiv.innerHTML = ''; // Clear existing content
+            const filteredProducts = products.filter(product => {
+                if (category === 'all') return true;
+                return product.gender === category || product.gender === 'unisex';
+            });
+
+            filteredProducts.forEach(product => {
+                const productCard = document.createElement('div');
+                // Added AOS attributes to product cards for scroll animation
+                productCard.className = 'product-card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition duration-200 hover:shadow-xl hover:scale-[1.02] cursor-pointer';
+                productCard.dataset.productId = product.id; // Store product ID
+                productCard.setAttribute('data-aos', 'fade-up');
+                productCard.setAttribute('data-aos-delay', (product.id % 4) * 100); // Stagger delay based on row
+
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">${product.name}</h3>
+                    <p class="text-purple-600 font-bold text-lg mb-4">₹${product.price.toFixed(2)}</p>
+                    <!-- Removed Add to Cart button from product cards as requested -->
+                `;
+                productListDiv.appendChild(productCard);
+            });
+
+            // Attach event listeners to product cards to open detail modal (main interaction now)
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('click', (event) => {
+                    const productId = parseInt(event.currentTarget.dataset.productId);
+                    openProductDetailModal(productId);
+                });
+            });
+
+            // Update active state of filter buttons
+            filterButtons.forEach(btn => {
+                if (btn.dataset.category === category) {
+                    btn.classList.add('bg-purple-600', 'text-white');
+                    btn.classList.remove('bg-white', 'text-gray-700');
+                } else {
+                    btn.classList.remove('bg-purple-600', 'text-white');
+                    btn.classList.add('bg-white', 'text-gray-700');
+                }
+            });
+        }
+
+        /**
+         * Adds a product to the cart.
+         * @param {number} productId - The ID of the product to add.
+         * @param {number} quantity - The quantity to add.
+         * @param {string} selectedSize - The selected size of the product.
+         */
+        function addToCart(productId, quantity = 1, selectedSize = 'M') {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            // Check if item with same ID and size already exists in cart
+            const existingItemIndex = cart.findIndex(item => item.id === productId && item.size === selectedSize);
+
+            if (existingItemIndex > -1) {
+                cart[existingItemIndex].quantity += quantity;
+            } else {
+                cart.push({ ...product, quantity, size: selectedSize });
+            }
+
+            updateCartDisplay();
+            openCartModal(); // Open cart modal when item is added
+        }
+
+        /**
+         * Removes an item from the cart.
+         * @param {number} productId - The ID of the product to remove.
+         * @param {string} size - The size of the product to remove.
+         */
+        function removeFromCart(productId, size) {
+            cart = cart.filter(item => !(item.id === productId && item.size === size));
+            updateCartDisplay();
+        }
+
+        /**
+         * Updates the quantity of a product in the cart.
+         * @param {number} productId - The ID of the product.
+         * @param {string} size - The size of the product.
+         * @param {number} newQuantity - The new quantity.
+         */
+        function updateCartQuantity(productId, size, newQuantity) {
+            const itemIndex = cart.findIndex(item => item.id === productId && item.size === size);
+            if (itemIndex > -1) {
+                if (newQuantity <= 0) {
+                    removeFromCart(productId, size);
+                } else {
+                    cart[itemIndex].quantity = newQuantity;
+                }
+            }
+            updateCartDisplay();
+        }
+
+        /**
+         * Updates the cart count, total, and renders cart items.
+         */
+        function updateCartDisplay() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+
+            cartItemsContainer.innerHTML = ''; // Clear previous items
+
+            if (cart.length === 0) {
+                emptyCartMessage.style.display = 'block';
+            } else {
+                emptyCartMessage.style.display = 'none';
+                let subtotal = 0;
+                cart.forEach(item => {
+                    subtotal += item.price * item.quantity;
+
+                    const cartItemDiv = document.createElement('div');
+                    cartItemDiv.className = 'flex items-center space-x-4 border-b pb-4';
+                    cartItemDiv.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover rounded-lg">
+                        <div class="flex-grow">
+                            <h4 class="font-semibold text-gray-800">${item.name} (${item.size})</h4>
+                            <p class="text-purple-600 font-bold">₹${item.price.toFixed(2)}</p>
+                            <div class="flex items-center mt-2">
+                                <button class="quantity-minus bg-gray-200 text-gray-700 w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-300 transition-colors" data-product-id="${item.id}" data-size="${item.size}">-</button>
+                                <span class="mx-2 text-gray-800 font-medium">${item.quantity}</span>
+                                <button class="quantity-plus bg-gray-200 text-gray-700 w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-300 transition-colors" data-product-id="${item.id}" data-size="${item.size}">+</button>
+                            </div>
+                        </div>
+                        <button class="remove-from-cart text-red-500 hover:text-red-700 text-2xl" data-product-id="${item.id}" data-size="${item.size}">&times;</button>
+                    `;
+                    cartItemsContainer.appendChild(cartItemDiv);
+                });
+                cartTotal.textContent = `₹${subtotal.toFixed(2)}`;
+
+                // Add event listeners for quantity buttons and remove button
+                document.querySelectorAll('.quantity-minus').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const productId = parseInt(event.target.dataset.productId);
+                        const size = event.target.dataset.size;
+                        const currentItem = cart.find(item => item.id === productId && item.size === size);
+                        if (currentItem) {
+                            updateCartQuantity(productId, size, currentItem.quantity - 1);
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.quantity-plus').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const productId = parseInt(event.target.dataset.productId);
+                        const size = event.target.dataset.size;
+                        const currentItem = cart.find(item => item.id === productId && item.size === size);
+                        if (currentItem) {
+                            updateCartQuantity(productId, size, currentItem.quantity + 1);
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.remove-from-cart').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const productId = parseInt(event.target.dataset.productId);
+                        const size = event.target.dataset.size;
+                        removeFromCart(productId, size);
+                    });
+                });
+            }
+        }
+
+        /**
+         * Opens the cart modal.
+         */
+        function openCartModal() {
+            cartModal.classList.add('open');
+            cartOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        /**
+         * Closes the cart modal.
+         */
+        function closeCartModal() {
+            cartModal.classList.remove('open');
+            cartOverlay.classList.remove('open');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        /**
+         * Opens the product detail modal with specific product data.
+         * @param {number} productId - The ID of the product to display.
+         */
+        function openProductDetailModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            modalProductName.textContent = product.name;
+            modalProductPrice.textContent = `₹${product.price.toFixed(2)}`;
+            modalProductImage.src = product.image;
+            modalProductImage.alt = product.name;
+            modalProductDescription.textContent = product.description;
+            modalAddToCartButton.dataset.productId = product.id; // Set ID for add to cart
+
+            productDetailModalOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            productDetailModalOverlay.classList.add('opacity-100', 'pointer-events-auto');
+            productDetailModal.classList.remove('scale-95');
+            productDetailModal.classList.add('scale-100');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        /**
+         * Closes the product detail modal.
+         */
+        function closeProductDetailModal() {
+            productDetailModalOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+            productDetailModalOverlay.classList.add('opacity-0', 'pointer-events-none');
+            productDetailModal.classList.remove('scale-100');
+            productDetailModal.classList.add('scale-95');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+
+        // --- Event Listeners ---
+
+        // Mobile menu toggle
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            menuButton.querySelector('.hamburger-icon').classList.toggle('open');
+        });
+
+        // Close mobile menu when a link is clicked
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuButton.querySelector('.hamburger-icon').classList.remove('open');
+            });
+        });
+
+        // Cart button click
+        cartButton.addEventListener('click', openCartModal);
+
+        // Close cart button click
+        closeCartButton.addEventListener('click', closeCartModal);
+
+        // Close cart modal when overlay is clicked
+        cartOverlay.addEventListener('click', closeCartModal);
+
+        // "Shop More" button in cart modal
+        shopMoreButton.addEventListener('click', closeCartModal);
+
+        // Product detail modal add to cart button
+        modalAddToCartButton.addEventListener('click', (event) => {
+            const productId = parseInt(event.target.dataset.productId);
+            const selectedSize = modalProductSize.value;
+            addToCart(productId, 1, selectedSize); // Add 1 quantity with selected size
+            closeProductDetailModal(); // Close modal after adding to cart
+        });
+
+        // Close product detail modal button
+        closeProductDetailModalButton.addEventListener('click', closeProductDetailModal);
+
+        // Close product detail modal when overlay is clicked
+        productDetailModalOverlay.addEventListener('click', (event) => {
+            // Only close if the click is directly on the overlay, not the modal content itself
+            if (event.target === productDetailModalOverlay) {
+                closeProductDetailModal();
+            }
+        });
+
+        // Product category filter buttons
+        filterButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const category = event.target.dataset.category;
+                renderProducts(category);
+            });
+        });
+
+
+        // --- Initializations on Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Preloader logic
+            document.body.style.overflow = 'hidden'; // Prevent scrolling initially
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    preloader.classList.add('hidden');
+                    document.body.style.overflow = ''; // Re-enable scrolling
+                }, 2000); // 2 seconds
+            });
+
+            renderProducts('all'); // Render all products by default
+            updateCartDisplay(); // Initialize cart display (should be 0)
+            startCarousel(); // Start the hero carousel
+        });
+    </script>
+</body>
+</html>
